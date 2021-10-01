@@ -11,44 +11,58 @@
 	ユーザー名かパスワードが間違っています：①IDが間違っている　②IDが正しいがパスワードが異なる
 	ログインしてください：ログインしていない状態で他のページに遷移した場合(ログイン画面に遷移し上記を表示)
 */
-//⑥セッションを開始する
 
+//⑥セッションを開始する
+session_start();
 //①名前とパスワードを入れる変数を初期化する
+$name;
+$password;
+$message = "";
+$errormsg = "";
 
 /*
  * ②ログインボタンが押されたかを判定する。
  * 押されていた場合はif文の中の処理を行う
  */
-if (/* ②の処理を書く */ ) {
+if (isset($_POST['decision']) && $_POST['decision'] == 1) {
 	/*
 	 * ③名前とパスワードが両方とも入力されているかを判定する。
 	 * 入力されていた場合はif文の中の処理を行う。
 	 */
-	if (/* ③の処理を書く */) {
+	if ($_POST['name'] && $_POST['pass']) {
 		//④名前とパスワードにPOSTで送られてきた名前とパスワードを設定する
+		$name = $_POST['name'];
+		$password = $_POST['pass'];
 	} else {
 		//⑤名前かパスワードが入力されていない場合は、「名前かパスワードが未入力です」という文言をメッセージを入れる変数に設定する
+		$message = "名前かパスワードが未入力です";
 	}
 }
 
 //⑦名前が入力されているか判定する。入力されていた場合はif文の中に入る
-if (/* ⑦の処理を書く */) {
+if (isset($name)) {
 	//⑧名前に「yse」、パスワードに「2021」と設定されているか確認する。設定されていた場合はif文の中に入る
-	if (/* ⑧の処理を書く */){
+	if (strcmp($name, 'yse') == 0 && $password == 2021){
 		//⑨SESSIONに名前を設定し、SESSIONの「login」フラグをtrueにする
+		$_SESSION['name'] = $name;
+		$_SESSION['login'] = true;
 		//⑩在庫一覧画面へ遷移する
-		header(/* ⑩の遷移先を書く */);
+		header('Location: zaiko_ichiran.php');
 	}else{
 		//⑪名前もしくはパスワードが間違っていた場合は、「ユーザー名かパスワードが間違っています」という文言をメッセージを入れる変数に設定する
+		$message = "ユーザー名かパスワードが間違っています";
 	}
 }
 
 //⑫SESSIONの「error2」に値が入っているか判定する。入っていた場合はif文の中に入る
-if (/* ⑫の処理を書く */) {
+if (isset($_SESSION['error2'])) {
 	//⑬SESSIONの「error2」の値をエラーメッセージを入れる変数に設定する。
+	$errormsg = $_SESSION['error2'];
 	//⑭SESSIONの「error2」にnullを入れる。
+	$_SESSION['error2'] = null;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -61,10 +75,10 @@ if (/* ⑫の処理を書く */) {
 		<h1>ログイン</h1>
 		<?php
 		//⑮エラーメッセージの変数に入っている値を表示する
-		echo "<div id='error'>", /* ⑮の変数を書く */, "</div>";
+		echo "<div id='error'>", $errormsg, "</div>";
 		
 		//⑯メッセージの変数に入っている値を表示する
-		echo "<div id='msg'>", /* ⑯の変数を書く */, "</div>";
+		echo "<div id='msg'>", $message, "</div>";
 		?>
 		<form action="login.php" method="post" id="log">
 			<p>
