@@ -149,6 +149,7 @@ if($_POST["add"] && $_POST["add"]=="ok"){
 						//㉝POSTの「books」から値を取得し、変数に設定する。
 						foreach($_POST["books"] as $book){
 						//㉞「getByid」関数を呼び出し、変数に戻り値を入れる。その際引数に㉜の処理で取得した値と⑧のDBの接続情報を渡す。
+						$book_data = getByid($books,$pdo);
 						?>
 						<tr>
 							<td><?php echo	/* ㉟ ㉞で取得した書籍情報からtitleを表示する。 */;?></td>
