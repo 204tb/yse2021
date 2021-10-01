@@ -8,7 +8,7 @@
 なし
 */
 
-//①セッションを開始する 終
+//①セッションを開始する 
 session_start();
 
 function getByid($id,$con){
@@ -152,14 +152,15 @@ if($_POST["add"] && $_POST["add"]=="ok"){
 						$book_data = getByid($books,$pdo);
 						?>
 						<tr>
-							<td><?php echo	/* ㉟ ㉞で取得した書籍情報からtitleを表示する。 */;?></td>
-							<td><?php echo	/* ㊱ ㉞で取得した書籍情報からstockを表示する。 */;?></td>
-							<td><?php echo	/* ㊱ POSTの「stock」に設定されている値を㉜の変数を使用して呼び出す。 */;?></td>
+							<td><?php echo	$book_data["title"];?></td>
+							<td><?php echo	$book_data["stock"];?></td>
+							<td><?php echo	$_POST["stock"]["books"];?></td>
 						</tr>
-						<input type="hidden" name="books[]" value="<?php echo /* ㊲ ㉝で取得した値を設定する */; ?>">
-						<input type="hidden" name="stock[]" value='<?php echo /* ㊳POSTの「stock」に設定されている値を㉜の変数を使用して設定する。 */;?>'>
+						<input type="hidden" name="books[]" value="<?php echo $book; ?>">
+						<input type="hidden" name="stock[]" value='<?php echo $_POST["stock"][$books];?>'>
 						<?php
 							//㊴ ㉜で宣言した変数をインクリメントで値を1増やす。
+							$books++;
 						}
 						?>
 					</tbody>
