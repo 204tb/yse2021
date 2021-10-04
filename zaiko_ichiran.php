@@ -11,18 +11,55 @@
 */
 
 //①セッションを開始する
+session_start();
 
 //②SESSIONの「login」フラグがfalseか判定する。「login」フラグがfalseの場合はif文の中に入る。
-if (/* ②の処理を書く */){
+if (isset($_SESSION[''])){
 	//③SESSIONの「error2」に「ログインしてください」と設定する。
 	//④ログイン画面へ遷移する。
 }
 
 //⑤データベースへ接続し、接続情報を変数に保存する
-
 //⑥データベースで使用する文字コードを「UTF8」にする
+$db_name = 'zaiko2021_yse';
+$db_host = 'localhost';
+$db_port = '3306';
+$db_user = 'zaiko2021_yse';
+$db_password = '2021zaiko';
+$dsn = "mysql:dbname={$db_name};host={$db_host};charset=utf8;port={$db_port}";
+try{
+	$pdo ~ new PDO($dsn,$db_user,$db_password);
+	$pdo->setattribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+	$pdo->setattribute(PDO::ATTR_EMULATE_PREPARES,false);
+}catch(PDOExseption $e){
+	echo "接続開始" . $e->getMessage();
+	exit
+}
+
 
 //⑦書籍テーブルから書籍情報を取得するSQLを実行する。また実行結果を変数に保存する
+$books = getbooks($pdo);
+
+function getbooks $pdo, $limit = 20, $offset = 0
+{
+
+	$sql = "SELECT * FROM books";
+	$stmt = $pdo->prepare($sql);
+	$stmt->execute();
+
+	$books =[];
+	while($book = $stmt->fetch(PDO::FETCH_ASSOC)){
+		$books[] = $book;
+
+	}
+	return $books;
+
+	}
+
+
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
