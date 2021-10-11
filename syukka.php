@@ -27,6 +27,12 @@ if (empty($_SESSION['login'])|| $_SESSION['login'] == false){
 }
 
 //⑥データベースへ接続し、接続情報を変数に保存する
+$db_name = "books";
+$db_host = "localhost";
+$db_charset ="utf8";
+$dsn ="mysql:dbname={$db_name};host={$db_host};charset={$db_charset}";
+$user ="zaiko2021_yse";
+$pass ="2021zaiko";
 try{
 	$pdo = new PDO($dsn,$db_user,$db_password);
 	$pdo-> setattribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
