@@ -14,25 +14,41 @@
  * ①session_status()の結果が「PHP_SESSION_NONE」と一致するか判定する。
  * 一致した場合はif文の中に入る。
  */
-if (/* ①.の処理を行う */) {
+if (session_status()==PHP_SESSION_NONE) {
 	//②セッションを開始する
+	session_start();
 }
 
 
 //③SESSIONの「login」フラグがfalseか判定する。「login」フラグがfalseの場合はif文の中に入る。
-if (/* ③の処理を書く */){
+if ($_SESSION["login"]){
 	//④SESSIONの「error2」に「ログインしてください」と設定する。
+	$_SESSION["error2"]="ログインしてください";
 	//⑤ログイン画面へ遷移する。
+	header("Location:login.php");
 }
 
 //⑥データベースへ接続し、接続情報を変数に保存する
-
 //⑦データベースで使用する文字コードを「UTF8」にする
+$db_name = "books";
+$db_host = "localhost";
+$db_charset ="utf8";
+$dsn ="mysql:dbname={$db_name};host={$db_host};charset={$db_charset}";
+$user ="zaiko2021_yse";
+$pass ="2021zaiko";
+try{
+	$pdo = new PDO($dsn,$user,$pass);
+}catch(PDOException $e){
+
+}
+
 
 //⑧POSTの「books」の値が空か判定する。空の場合はif文の中に入る。
-if(/* ⑧の処理を行う */){
+if(empty($_POST["books"])){
 	//⑨SESSIONの「success」に「入荷する商品が選択されていません」と設定する。
+	$_SESSION["success"] ="入荷する商品が選択されていません";
 	//⑩在庫一覧画面へ遷移する。
+	header("Location:zaiko_ichiran.php");
 }
 
 function getId($id,$con){
@@ -41,8 +57,12 @@ function getId($id,$con){
 	 * その際にWHERE句でメソッドの引数の$idに一致する書籍のみ取得する。
 	 * SQLの実行結果を変数に保存する。
 	 */
+	$sql = "SELECT * FROM books WHERE :id =id";
+	$stmt = $con->prepare($sql);
+	$stmt->execute([":id" => $id]);
 
 	//⑫実行した結果から1レコード取得し、returnで値を返す。
+	return $stmt->fetch();
 }
 
 ?>
@@ -77,8 +97,9 @@ function getId($id,$con){
 			 * ⑬SESSIONの「error」にメッセージが設定されているかを判定する。
 			 * 設定されていた場合はif文の中に入る。
 			 */ 
-			if(/* ⑬の処理を書く */){
+			if(isset($_SESSION["error"])){
 				//⑭SESSIONの「error」の中身を表示する。
+				echo '<p>'.$_SESSION["error"].'</p>';
 			}
 			?>
 			</div>
@@ -99,17 +120,18 @@ function getId($id,$con){
 					/*
 					 * ⑮POSTの「books」から一つずつ値を取り出し、変数に保存する。
 					 */
-    				foreach(/* ⑮の処理を書く */){
+    				foreach($_POST["books"] as $id){
     					// ⑯「getId」関数を呼び出し、変数に戻り値を入れる。その際引数に⑮の処理で取得した値と⑥のDBの接続情報を渡す。
+						$book = getId($id,$pdo);
 					?>
-					<input type="hidden" value="<?php echo	/* ⑰ ⑯の戻り値からidを取り出し、設定する */;?>" name="books[]">
+					<input type="hidden" value="<?php echo	$book["id"];?>" name="books[]">
 					<tr>
-						<td><?php echo	/* ⑱ ⑯の戻り値からidを取り出し、表示する */;?></td>
-						<td><?php echo	/* ⑲ ⑯の戻り値からtitleを取り出し、表示する */;?></td>
-						<td><?php echo	/* ⑳ ⑯の戻り値からauthorを取り出し、表示する */;?></td>
-						<td><?php echo	/* ㉑ ⑯の戻り値からsalesDateを取り出し、表示する */;?></td>
-						<td><?php echo	/* ㉒ ⑯の戻り値からpriceを取り出し、表示する */;?></td>
-						<td><?php echo	/* ㉓ ⑯の戻り値からstockを取り出し、表示する */;?></td>
+						<td><?php echo	/* ⑱ ⑯の戻り値からidを取り出し、表示する */$book["id"];?></td>
+						<td><?php echo	/* ⑲ ⑯の戻り値からtitleを取り出し、表示する */$book["title"];?></td>
+						<td><?php echo	/* ⑳ ⑯の戻り値からauthorを取り出し、表示する */$book["author"];?></td>
+						<td><?php echo	/* ㉑ ⑯の戻り値からsalesDateを取り出し、表示する */$book["salesDate"];?></td>
+						<td><?php echo	/* ㉒ ⑯の戻り値からpriceを取り出し、表示する */$book["price"];?></td>
+						<td><?php echo	/* ㉓ ⑯の戻り値からstockを取り出し、表示する */$book["stock"];?></td>
 						<td><input type='text' name='stock[]' size='5' maxlength='11' required></td>
 					</tr>
 					<?php
