@@ -73,7 +73,7 @@ foreach($_POST["books"] as $book){
 	 * 半角数字以外の文字が設定されていないかを「is_numeric」関数を使用して確認する。
 	 * 半角数字以外の文字が入っていた場合はif文の中に入る。
 	 */
-	if (is_numeric($_POST["stock"][$books])) {
+	if (!is_numeric($_POST["stock"][$books])) {
 		//⑬SESSIONの「error」に「数値以外が入力されています」と設定する。
 		$_SESSION["error"]="数値以外が入力されています";
 		//⑭「include」を使用して「nyuka.php」を呼び出す。
@@ -104,7 +104,7 @@ foreach($_POST["books"] as $book){
  * ㉓POSTでこの画面のボタンの「add」に値が入ってるか確認する。
  * 値が入っている場合は中身に「ok」が設定されていることを確認する。
  */
-if($_POST["add"] && $_POST["add"]=="ok"){
+if(isset($_POST["add"]) && $_POST["add"]=="ok"){
 	//㉔書籍数をカウントするための変数を宣言し、値を0で初期化する。
 	$books =0;
 	//㉕POSTの「books」から値を取得し、変数に設定する。
@@ -155,12 +155,12 @@ if($_POST["add"] && $_POST["add"]=="ok"){
 						//㉝POSTの「books」から値を取得し、変数に設定する。
 						foreach($_POST["books"] as $book){
 						//㉞「getByid」関数を呼び出し、変数に戻り値を入れる。その際引数に㉜の処理で取得した値と⑧のDBの接続情報を渡す。
-						$book_data = getByid($books,$pdo);
+						$book_data = getByid($book,$pdo);
 						?>
 						<tr>
 							<td><?php echo	$book_data["title"];?></td>
 							<td><?php echo	$book_data["stock"];?></td>
-							<td><?php echo	$_POST["stock"]["books"];?></td>
+							<td><?php echo	$_POST["stock"][$books];?></td>
 						</tr>
 						<input type="hidden" name="books[]" value="<?php echo $book; ?>">
 						<input type="hidden" name="stock[]" value='<?php echo $_POST["stock"][$books];?>'>

@@ -21,7 +21,7 @@ if (session_status()==PHP_SESSION_NONE) {
 
 
 //③SESSIONの「login」フラグがfalseか判定する。「login」フラグがfalseの場合はif文の中に入る。
-if ($_SESSION["login"]){
+if (!$_SESSION["login"]){
 	//④SESSIONの「error2」に「ログインしてください」と設定する。
 	$_SESSION["error2"]="ログインしてください";
 	//⑤ログイン画面へ遷移する。
@@ -30,7 +30,7 @@ if ($_SESSION["login"]){
 
 //⑥データベースへ接続し、接続情報を変数に保存する
 //⑦データベースで使用する文字コードを「UTF8」にする
-$db_name = "books";
+$db_name = "zaiko2021_yse";
 $db_host = "localhost";
 $db_charset ="utf8";
 $dsn ="mysql:dbname={$db_name};host={$db_host};charset={$db_charset}";
@@ -39,7 +39,7 @@ $pass ="2021zaiko";
 try{
 	$pdo = new PDO($dsn,$user,$pass);
 }catch(PDOException $e){
-
+	echo "接続エラー";
 }
 
 
