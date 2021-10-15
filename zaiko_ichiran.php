@@ -49,14 +49,11 @@ function getbooks ($pdo, $limit = 20, $offset = 0)
 	$stmt = $pdo->prepare($sql);
 	$stmt->execute();
 
-	$books =[];
-	while($book = $stmt->fetch(PDO::FETCH_ASSOC)){
-		$books[] = $book;
+	$books = $stmt->fetchall(PDO::FETCH_ASSOC);
 
-	
 	return $books;
 
-	}
+	
 }
 
 
