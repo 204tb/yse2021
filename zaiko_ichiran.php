@@ -71,10 +71,6 @@ function getbooks ($pdo, $limit = 20, $offset = 0)
 <body>
 	<div id="header">
 		<h1>書籍一覧</h1>
-		<?php if(isset($_SESSION['name'])):?>
-			<h1><?= $_SESSION['name'];?></h1>
-		<?php endif; ?>
-
 	</div>
 	<form action="zaiko_ichiran.php" method="post" id="myform" name="myform">
 		<div id="pagebody">
@@ -99,7 +95,7 @@ function getbooks ($pdo, $limit = 20, $offset = 0)
 			<div id="left">
 				<p id="ninsyou_ippan">
 					<?php
-						echo @$_SESSION["account_name"];
+						echo @$_SESSION["name"];
 					?><br>
 					<button type="button" id="logout" onclick="location.href='logout.php'">ログアウト</button>
 				</p>
