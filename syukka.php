@@ -45,7 +45,7 @@ try{
 
 if(empty($_POST["books"])){
 	//⑨SESSIONの「success」に「入荷する商品が選択されていません」と設定する。
-	$_SESSION["success"] ="入荷する商品が選択されていません";
+	$_SESSION["success"] ="出荷する商品が選択されていません";
 	//⑩在庫一覧画面へ遷移する。
 	header("Location:zaiko_ichiran.php");
 }
