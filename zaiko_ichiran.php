@@ -23,16 +23,21 @@ if ($_SESSION['login'] == false){
 
 //⑤データベースへ接続し、接続情報を変数に保存する
 //⑥データベースで使用する文字コードを「UTF8」にする
-$dsn ="mysql:dbname=zaiko2021_yse;host=localhost;charset=utf8";
+$db_name = "zaiko2021_yse";
+$db_host = "localhost";
+$db_charset = "utf8";
+
+$dsn ="mysql:dbname={$db_name};host={$db_host};charset={$db_charset}";
 $user ="zaiko2021_yse";
 $pass ="2021zaiko";
 try{
 	$pdo = new PDO($dsn,$user,$pass);
-}catch(PDOExseption $e){
+	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);//PDO::の後にオプションを付ける
+    $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+}catch(PDOException $e){
 	echo "接続エラー";
 	exit;
 }
-
 
 //⑦書籍テーブルから書籍情報を取得するSQLを実行する。また実行結果を変数に保存する
 $books = getbooks($pdo);
