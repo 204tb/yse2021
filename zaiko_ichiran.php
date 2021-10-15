@@ -14,47 +14,47 @@
 session_start();
 
 //②SESSIONの「login」フラグがfalseか判定する。「login」フラグがfalseの場合はif文の中に入る。
-if (isset($_SESSION[''])){
+if ($_SESSION['login'] == false){
 	//③SESSIONの「error2」に「ログインしてください」と設定する。
+	$_SESSION['error2'] = "ログインしてください";
 	//④ログイン画面へ遷移する。
+	header('Location: login.php');
 }
 
 //⑤データベースへ接続し、接続情報を変数に保存する
 //⑥データベースで使用する文字コードを「UTF8」にする
-$db_name = 'zaiko2021_yse';
-$db_host = 'localhost';
-$db_port = '3306';
-$db_user = 'zaiko2021_yse';
-$db_password = '2021zaiko';
-$dsn = "mysql:dbname={$db_name};host={$db_host};charset=utf8;port={$db_port}";
-try{
-	$pdo ~ new PDO($dsn,$db_user,$db_password);
-	$pdo->setattribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-	$pdo->setattribute(PDO::ATTR_EMULATE_PREPARES,false);
-}catch(PDOExseption $e){
-	echo "接続開始" . $e->getMessage();
-	exit
-}
+$db_name = "zaiko2021_yse";
+$db_host = "localhost";
+$db_charset = "utf8";
 
+$dsn ="mysql:dbname={$db_name};host={$db_host};charset={$db_charset}";
+$user ="zaiko2021_yse";
+$pass ="2021zaiko";
+try{
+	$pdo = new PDO($dsn,$user,$pass);
+	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);//PDO::の後にオプションを付ける
+    $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+}catch(PDOException $e){
+	echo "接続エラー";
+	exit;
+}
 
 //⑦書籍テーブルから書籍情報を取得するSQLを実行する。また実行結果を変数に保存する
 $books = getbooks($pdo);
 
-function getbooks $pdo, $limit = 20, $offset = 0
+function getbooks ($pdo, $limit = 20, $offset = 0)
 {
 
 	$sql = "SELECT * FROM books";
 	$stmt = $pdo->prepare($sql);
 	$stmt->execute();
 
-	$books =[];
-	while($book = $stmt->fetch(PDO::FETCH_ASSOC)){
-		$books[] = $book;
+	$books = $stmt->fetchall(PDO::FETCH_ASSOC);
 
-	}
 	return $books;
 
-	}
+	
+}
 
 
 
@@ -81,8 +81,9 @@ function getbooks $pdo, $limit = 20, $offset = 0
 				 * ⑧SESSIONの「success」にメッセージが設定されているかを判定する。
 				 * 設定されていた場合はif文の中に入る。
 				 */ 
-				if(/* ⑧の処理を書く */){
+				if(isset($_SESSION['success'])){
 					//⑨SESSIONの「success」の中身を表示する。
+					echo $_SESSION['success'];
 				}
 				?>
 			</div>
@@ -118,20 +119,19 @@ function getbooks $pdo, $limit = 20, $offset = 0
 					<tbody>
 						<?php
 						//⑩SQLの実行結果の変数から1レコードのデータを取り出す。レコードがない場合はループを終了する。
-						while(/* ⑩の処理を書く */){
+						foreach($books as $book):
 							//⑪extract変数を使用し、1レコードのデータを渡す。
-
 							echo "<tr id='book'>";
-							echo "<td id='check'><input type='checkbox' name='books[]'value="./* ⑫IDを設定する */."></td>";
-							echo "<td id='id'>/* ⑬IDを表示する */</td>";
-							echo "<td id='title'>/* ⑭titleを表示する */</td>";
-							echo "<td id='author'>/* ⑮authorを表示する */</td>";
-							echo "<td id='date'>/* ⑯salesDateを表示する */</td>";
-							echo "<td id='price'>/* ⑰priceを表示する */</td>";
-							echo "<td id='stock'>/* ⑱stockを表示する */</td>";
+							echo "<td id='check'><input type='checkbox' name='books[]'value=".$book['id']."></td>";
+							echo "<td id='id'>{$book['id']}</td>";
+							echo "<td id='title'>{$book['title']}</td>";
+							echo "<td id='author'>{$book['author']}</td>";
+							echo "<td id='date'>{$book['salesDate']}</td>";
+							echo "<td id='price'>{$book['price']}</td>";
+							echo "<td id='stock'>{$book['stock']}</td>";
 
 							echo "</tr>";
-						}
+						endforeach;
 						?>
 					</tbody>
 				</table>
