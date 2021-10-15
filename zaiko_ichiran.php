@@ -71,6 +71,10 @@ function getbooks ($pdo, $limit = 20, $offset = 0)
 <body>
 	<div id="header">
 		<h1>書籍一覧</h1>
+		<?php if(isset($_SESSION['name'])):?>
+			<h1><?= $_SESSION['name'];?></h1>
+		<?php endif; ?>
+
 	</div>
 	<form action="zaiko_ichiran.php" method="post" id="myform" name="myform">
 		<div id="pagebody">
@@ -81,11 +85,13 @@ function getbooks ($pdo, $limit = 20, $offset = 0)
 				 * ⑧SESSIONの「success」にメッセージが設定されているかを判定する。
 				 * 設定されていた場合はif文の中に入る。
 				 */ 
+
 				if(isset($_SESSION['success'])){
 					//⑨SESSIONの「success」の中身を表示する。
 					echo $_SESSION['success'];
 					$_SESSION["success"]="";
 				}
+
 				?>
 			</div>
 			
