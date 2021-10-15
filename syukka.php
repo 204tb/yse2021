@@ -13,7 +13,7 @@
  * ①session_status()の結果が「PHP_SESSION_NONE」と一致するか判定する。
  * 一致した場合はif文の中に入る。
  */
-if (session_status()=PHP_SESSION_NONE) {
+if (session_status()==PHP_SESSION_NONE) {
 	session_start();
 }
 
@@ -34,10 +34,10 @@ $dsn ="mysql:dbname={$db_name};host={$db_host};charset={$db_charset}";
 $user ="zaiko2021_yse";
 $pass ="2021zaiko";
 try{
-	$pdo = new PDO($dsn,$db_user,$db_password);
-	$pdo-> setattribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-	$pdo -> setattribute(PDO::ATTR_ERRMODE_PREPARES,false);
-}catch(PDDException $e){
+	$pdo = new PDO($dsn,$user,$pass);
+	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);//PDO::の後にオプションを付ける
+    $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+}catch(PDOException $e){
 	echo "接続開始". $e->getMessage();
 	exit;
 }
