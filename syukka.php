@@ -27,7 +27,7 @@ if (empty($_SESSION['login'])|| $_SESSION['login'] == false){
 }
 
 //⑥データベースへ接続し、接続情報を変数に保存する
-$db_name = "books";
+$db_name = "zaiko2021_yse";
 $db_host = "localhost";
 $db_charset ="utf8";
 $dsn ="mysql:dbname={$db_name};host={$db_host};charset={$db_charset}";
