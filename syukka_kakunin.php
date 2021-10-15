@@ -41,10 +41,15 @@ function updateByid($id,$con,$total){
 if (!$_SESSION['login']){
 	//⑥SESSIONの「error2」に「ログインしてください」と設定する。
 	//⑦ログイン画面へ遷移する。
-	$_SESSION['login'] = "ログインしてください";
+	$_SESSION['error2'] = "ログインしてください";//error2に
 	header("Location:login.php");
 }
-
+if(empty($_POST["books"])){
+	//⑨SESSIONの「success」に「入荷する商品が選択されていません」と設定する。
+	$_SESSION["success"] ="出荷する商品が選択されていません";
+	//⑩在庫一覧画面へ遷移する。
+	header("Location:zaiko_ichiran.php");
+}
 //⑧データベースへ接続し、接続情報を変数に保存する
 //⑨データベースで使用する文字コードを「UTF8」にする
 $dsn ="mysql:dbname=zaiko2021_yse;host=localhost;charset=utf8";
