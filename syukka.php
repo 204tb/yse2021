@@ -123,8 +123,6 @@ function getId($id,$con){
 				 */foreach($_POST["books"] as $id){
     					// ⑯「getId」関数を呼び出し、変数に戻り値を入れる。その際引数に⑮の処理で取得した値と⑥のDBの接続情報を渡す。
 						$book = getId($id,$pdo);
-						?>
-				
 				?>
 				<input type="hidden" value="<?php echo	$book["id"];?>" name="books[]">
 				<tr>

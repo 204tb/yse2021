@@ -100,6 +100,7 @@ function getId($id,$con){
 			if(isset($_SESSION["error"])){
 				//⑭SESSIONの「error」の中身を表示する。
 				echo '<p>'.$_SESSION["error"].'</p>';
+
 			}
 			?>
 			</div>
