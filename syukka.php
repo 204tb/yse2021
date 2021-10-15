@@ -39,7 +39,7 @@ try{
 	$pdo -> setattribute(PDO::ATTR_ERRMODE_PREPARES,false);
 }catch(PDDException $e){
 	echo "接続開始". $e->getMessage();
-	exit
+	exit;
 }
 //⑦データベースで使用する文字コードを「UTF8」にする
 
