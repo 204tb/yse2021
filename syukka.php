@@ -126,7 +126,7 @@ function getId($id,$con){
 						?>
 				
 				?>
-				<input type="hidden" value="<?php echo	/* ⑰ ⑯の戻り値からidを取り出し、設定する */;?>" name="books[]">
+				<input type="hidden" value="<?php echo	$book["id"];?>" name="books[]">
 				<tr>
 						<td><?php echo	/* ⑱ ⑯の戻り値からidを取り出し、表示する */$book["id"];?></td>
 						<td><?php echo	/* ⑲ ⑯の戻り値からtitleを取り出し、表示する */$book["title"];?></td>
