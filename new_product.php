@@ -27,7 +27,12 @@ try{
 	echo "接続エラー";
 }
 
+//ボタンを押した際の処理
 if(isset($_POST["new"]) && $_POST["new"]=="ok"){
+	//入力値のチェック
+
+	
+	
 	//データベースに書籍を追加する
 	Book_Add();
 	//SESSIONの「success」に「入荷が完了しました」と設定する。
@@ -37,6 +42,7 @@ if(isset($_POST["new"]) && $_POST["new"]=="ok"){
 	
 }
 
+//booksテーブル内の最大値となるidを取得
 function getByid($con){
 	$sql = "SELECT max(id) FROM books";
 	$stmt = $con->prepare($sql);
@@ -46,11 +52,13 @@ function getByid($con){
 	return $stmt->fetch();
 }
 
+//書籍を追加する
 function Book_Add(){
 
 }
 
 ?>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
