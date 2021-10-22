@@ -11,6 +11,7 @@ if (!$_SESSION["login"]){
 	$_SESSION["error2"]="ログインしてください";
 	//ログイン画面へ遷移する。
 	header("Location:login.php");
+	exit;
 }
 
 //データベースへ接続し、接続情報を変数に保存する
@@ -24,7 +25,10 @@ $pass ="2021zaiko";
 try{
 	$pdo = new PDO($dsn,$user,$pass);
 }catch(PDOException $e){
-	echo "接続エラー";
+	$_SESSION["error2"]="データベースの接続に失敗しました";
+	//ログイン画面へ遷移する。
+	header("Location:login.php");
+	exit;
 }
 
 //POSTの「books」の値が空か判定する。空の場合はif文の中に入る。
@@ -33,6 +37,7 @@ if(empty($_POST["books"])){
 	$_SESSION["success"] ="削除する商品が選択されていません";
 	//在庫一覧画面へ遷移する。
 	header("Location:zaiko_ichiran.php");
+	exit;
 }
 
 if(isset($_POST["delete"]) && $_POST["delete"]=="ok"){
@@ -53,6 +58,7 @@ if(isset($_POST["delete"]) && $_POST["delete"]=="ok"){
 	$_SESSION["success"] ="削除が完了しました";
 	//在庫一覧画面へ遷移する。
 	header("location:zaiko_ichiran.php");
+	exit;
 }
 
 function getByid($id,$con){

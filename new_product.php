@@ -24,15 +24,23 @@ $pass ="2021zaiko";
 try{
 	$pdo = new PDO($dsn,$user,$pass);
 }catch(PDOException $e){
-	echo "接続エラー";
+	$_SESSION["error2"]="データベースの接続に失敗しました";
+	//ログイン画面へ遷移する。
+	header("Location:login.php");
+	exit;
 }
 
 //ボタンを押した際の処理
 if(isset($_POST["new"]) && $_POST["new"]=="ok"){
 	//入力値のチェック
+	if (!is_numeric($_POST["price"]) || !is_numeric($_POST["stock"])) {
+		//SESSIONの「error」に「数値以外が入力されています」と設定する。
+		$_SESSION["success"]="金額、または在庫数に数値以外が入力されています";
+		//「exit」関数で処理を終了する。
+		header("Location:zaiko_ichiran.php");
+		exit;
+	}
 
-	
-	
 	//データベースに書籍を追加する
 	Book_Add();
 	//SESSIONの「success」に「入荷が完了しました」と設定する。
