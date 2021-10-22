@@ -41,6 +41,8 @@ if(isset($_POST["new"]) && $_POST["new"]=="ok"){
 		exit;
 	}
 
+	//POSTデータをサニタイズ
+	$posts = check($_POST);
 	//データベースに書籍を追加する
 	Book_Add();
 	//SESSIONの「success」に「入荷が完了しました」と設定する。
@@ -58,6 +60,15 @@ function getByid($con){
 
 	//⑫実行した結果から1レコード取得し、returnで値を返す。
 	return $stmt->fetch();
+}
+
+//サニタイズ(XSS対策)
+function check($posts)
+{
+    foreach ($posts as $column => $post) {
+        $posts[$column] = htmlspecialchars($post, ENT_QUOTES, 'UTF-8');
+    }
+    return $posts;
 }
 
 //書籍を追加する
