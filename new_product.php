@@ -43,13 +43,16 @@ if(isset($_POST["new"]) && $_POST["new"]=="ok"){
 
 	//POSTデータをサニタイズ
 	$posts = check($_POST);
+	//isbnを生成
+	$isbn = create_isbn();
+	var_dump($isbn);
 	//データベースに書籍を追加する
-	Book_Add();
+	Book_Add($pdo,$posts,$isbn);
 	//SESSIONの「success」に「入荷が完了しました」と設定する。
 	$_SESSION["success"] ="書籍の追加が完了しました";
 	//「header」関数を使用して在庫一覧画面へ遷移する。
 	header("location:zaiko_ichiran.php");
-	
+
 }
 
 //booksテーブル内の最大値となるidを取得
@@ -72,8 +75,33 @@ function check($posts)
 }
 
 //書籍を追加する
-function Book_Add(){
+function Book_Add($pdo,$posts,$isbn){    
+    try{
+        $sql = "INSERT INTO books VALUES(id,?,?,?,?,?,?,?)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(array($posts['title'],$posts['author'],$posts['date'],$isbn,$posts['price'],$posts['stock'],false));
+        header('Location: completion.php');
+    }
+    catch (PDOException $e) {
+        header('Location: error_page.php');
+        exit;
+    }
+}
 
+//isbn生成
+function create_isbn()
+{
+	//isbnに使う文字列
+	$shuffle = str_shuffle('0123456789');
+
+	//isbn用の変数
+	$isbn = "";
+
+	// 先頭13桁をisbnとして使う
+	for($i = 0 ; $i < 13 ; $i++)
+	$isbn = $isbn.substr(str_shuffle($shuffle), 0, 1);
+
+	return $isbn;
 }
 
 ?>
@@ -139,7 +167,7 @@ function Book_Add(){
 					<input type="hidden" value="" name="book">
 					<tr>
 						<td><?= $book_id;?></td>
-						<td><input type='text' name='name' size='5' maxlength='11' required></td>
+						<td><input type='text' name='title' size='5' maxlength='11' required></td>
 						<td><input type='text' name='author' size='5' maxlength='11' required></td>
 						<td><input type='text' name='date' size='5' maxlength='255' required></td>
 						<td><input type='text' name='price' size='5' maxlength='11' required></td>
@@ -156,5 +184,3 @@ function Book_Add(){
 	</div>
 </body>
 </html>
-
-?>
