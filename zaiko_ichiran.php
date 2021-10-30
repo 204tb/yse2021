@@ -42,23 +42,42 @@ try{
 //⑦書籍テーブルから書籍情報を取得するSQLを実行する。また実行結果を変数に保存する
 $books = getbooks($pdo);
 
+//昇順、降順ボタンを押した場合
+if(isset($_POST['asc'])){
+	$column = $_POST['asc'];
+	$books = Asc($books,$column);
+}
+else if(isset($_POST['desc'])){
+	$column = $_POST['desc'];
+	$books = Desc($books,$column);
+}
+
 function getbooks ($pdo, $limit = 20, $offset = 0)
 {
-
 	$sql = "SELECT * FROM books WHERE is_delete = false";
 	$stmt = $pdo->prepare($sql);
 	$stmt->execute();
-
-	$books = $stmt->fetchall(PDO::FETCH_ASSOC);
-
-	return $books;
-
 	
+	$books = $stmt->fetchall(PDO::FETCH_ASSOC);
+	
+	return $books;
 }
 
+function Asc($books,$column){
+	foreach ((array) $books as $key => $value) {
+		$sort[$key] = $value[$column];
+	}
+	array_multisort($sort, SORT_ASC, $books);
+	return $books;
+}
 
-
-
+function Desc($books,$column){
+	foreach ((array) $books as $key => $value) {
+		$sort[$key] = $value[$column];
+	}
+	array_multisort($sort, SORT_DESC, $books);
+	return $books;
+}
 
 ?>
 <!DOCTYPE html>
@@ -119,9 +138,9 @@ function getbooks ($pdo, $limit = 20, $offset = 0)
 							<th id="id">ID</th>
 							<th id="book_name">書籍名</th>
 							<th id="author">著者名</th>
-							<th id="salesDate">発売日</th>
-							<th id="itemPrice">金額</th>
-							<th id="stock">在庫数</th>
+							<th id="salesDate">発売日<button type="submit" id="sort" name="asc" value="salesDate">▲</button><button type="submit" id="sort" name="desc" value="salesDate">▼</button></th>
+							<th id="itemPrice">金額<button type="submit" id="sort" name="asc" value="price">▲</button><button type="submit" id="sort" name="desc" value="price">▼</button></th>
+							<th id="stock">在庫数<button type="submit" id="sort" name="asc" value="stock">▲</button><button type="submit" id="sort" name="desc" value="stock">▼</button></th>
 						</tr>
 					</thead>
 					<tbody>
