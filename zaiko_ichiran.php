@@ -126,6 +126,8 @@ function Desc($books,$column){
 				
 				<button type="submit" id="btn1" formmethod="POST" name="decision" value="6" formaction="delete_product.php">商品削除</button>
 
+				<button type="submit" id="btn1" formmethod="POST" name="decision" value="7" formaction="product_search.php">商品検索</button>
+
 			</div>
 			<!-- 中央表示 -->
 			<div id="center">
