@@ -87,6 +87,7 @@ function deleteByid($id,$con){
 }
 
 ?>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -169,5 +170,3 @@ function deleteByid($id,$con){
 	</div>
 </body>
 </html>
-
-?>

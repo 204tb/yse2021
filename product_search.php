@@ -39,7 +39,7 @@ if (!$_SESSION["login"]){
 		</nav>
 	</div>
 
-	<form action="" method="post">
+	<form action="search_result.php" method="post">
 			<div id="center">
 				<table>
 					<thead>
@@ -101,5 +101,3 @@ if (!$_SESSION["login"]){
 	</div>
 </body>
 </html>
-
-?>
