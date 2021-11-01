@@ -34,6 +34,13 @@ try{
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
+	$keyword = "";
+	$period = "";
+	$price = "";
+	$stock = "";
+	$pe_rimit = 0;
+	$pr_rimit = 0;
+
 	$where = "";
 	$where_array = [];
 	
@@ -41,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 	else{
 		//POSTデータを変数に格納,サニタイズ
 		$keyword = check($_POST['keyword']);
-		$where_array[] = "(title LIKE {$keyword} OR author LIKE {$keyword})";
+		$where_array[] = "(title LIKE '%{$keyword}%' OR author LIKE '%{$keyword}%')";
 	}
 
 	if(!empty($_POST['period'])){
@@ -72,11 +79,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 	}
 
 	if(count($where_array) > 0){
-		$where =  " WHERE is_delete = false".implode(" AND ",$where_array);
+		$where =  " WHERE is_delete = false AND ".implode($where_array);
 		$sql = "SELECT * FROM books".$where;
 		var_dump($sql);
 		//書籍テーブルから書籍情報を取得するSQLを実行する。また実行結果を変数に保存する
-		$books = getbooks($pdo,$sql);
+		$books = getbooks($pdo,$sql,$keyword,$period,$price,$stock,$pe_rimit,$pr_rimit);
 	}
 }
 
@@ -87,7 +94,7 @@ function check($keyword)
     return $keyword;
 }
 
-function getbooks ($pdo,$sql)
+function getbooks ($pdo,$sql,$keyword,$period,$price,$stock,$pe_rimit,$pr_rimit)
 {
 	$stmt = $pdo->prepare($sql);
 	$stmt->execute();	
