@@ -37,10 +37,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     //POSTデータをサニタイズ
 	$posts = check($_POST);
 
-    //postsをもとに条件に該当する書籍のみを取得する処理を記述
+	//POSTデータを変数に格納
+	$keyword = $_POST['keyword'];
+	$period = intval($_POST['period']);
+	$price = intval($_POST['price']);
+	$stock = $_POST['stock'];
+
+	//範囲指定用変数period,priceの上限値
+	$pe_rimit;
+	$pr_rimit;
+
+	//periodの上限値設定 範囲：十の位
+	for($i = $period ; substr($i,-2,1) === substr($period,-2,1) ; $i++)
+		$pe_rimit = $i;
+
+	//priceの上限値設定 範囲：百、千の位
+	for($i = $price ; substr($i,0,1) === substr($price,0,1) ; $i++)
+	$pr_rimit = $i;
+
+	var_dump($period,$pe_rimit,$price,$pr_rimit,$stock,$keyword);
 
     //書籍テーブルから書籍情報を取得するSQLを実行する。また実行結果を変数に保存する
-    $books = getbooks($pdo,$posts);
+    $books = getbooks($pdo,$keyword,$period,$price,$stock,$pe_rimit,$pr_rimit);
 }
 
 //サニタイズ(XSS対策)
@@ -52,11 +70,12 @@ function check($posts)
     return $posts;
 }
 
-function getbooks ($pdo,$posts)
+function getbooks ($pdo,$keyword,$period,$price,$stock,$pe_rimit,$pr_rimit)
 {
-	$sql = "SELECT * FROM books WHERE is_delete = false";
+	$sql = "SELECT * FROM books WHERE is_delete = false
+	AND (title LIKE ? OR author LIKE ?)";
 	$stmt = $pdo->prepare($sql);
-	$stmt->execute();
+	$stmt->execute(array('%'.$keyword.'%','%'.$keyword.'%'));
 	
 	$books = $stmt->fetchall(PDO::FETCH_ASSOC);
 	
@@ -93,6 +112,7 @@ function getbooks ($pdo,$posts)
 				<table>
 					<thead>
 						<tr>
+							<th id="check"></th>
 							<th>ID</th>
 							<th>書籍名</th>
 							<th>著者名</th>
