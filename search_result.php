@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 		//periodの上限値設定 範囲：十の位
 		for($i = $period ; substr($i,-2,1) === substr($period,-2,1) ; $i++)
 		$pe_rimit = $i;
-		$where_array[] = "";
+		$where_array[] = "SUBSTRING(salesDate,1,4)+0 BETWEEN {$period} AND {$pe_rimit}";
 	}
 	
 	if(!empty($_POST['price'])){
