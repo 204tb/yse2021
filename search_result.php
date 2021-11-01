@@ -79,13 +79,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 		//POSTデータの数値を変数に格納
 		$stock = preg_replace('/[^0-9]/', '', $_POST['stock']);
 		$stock = intval($stock);
-		var_dump($stock);
-		var_dump(substr($_POST['stock'], 2, 2));
+
+		//POSTデータの下２桁を変数に格納
+		$stockstr = mb_substr($_POST['stock'], -2, 2);
 
 		//以上、未満の文字で判別しsqlを変える
-		if(substr($_POST['stock'], -2, 2) == "未満"){
+		if($stockstr == "未満"){
 			$where_array[] = "stock < {$stock}";
-		}else if(substr($_POST['stock'], -2, 2) == "以上"){
+		}else if($stockstr == "以上"){
 			$where_array[] = "stock >= {$stock}";
 		}
 	}
@@ -100,8 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 		$where =  " WHERE is_delete = false".implode($where_array);
 		//SELECT句とWHERE句を連結
 		$sql = "SELECT * FROM books".$where;
-		//sqlを表示
-		var_dump($sql);
 		//書籍テーブルから書籍情報を取得するSQLを実行する。また実行結果を変数に保存する
 		$books = getbooks($pdo,$sql,$keyword,$period,$price,$stock,$pe_rimit,$pr_rimit);
 	}
