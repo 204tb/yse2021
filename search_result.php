@@ -41,7 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 	$pe_rimit = 0;
 	$pr_rimit = 0;
 
+	//WHERE句を格納する変数
 	$where = "";
+	//各条件のsqlを格納する配列
 	$where_array = [];
 	
 	if($_POST['keyword'] != 0 && empty($_POST['keyword'])){}
@@ -70,17 +72,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 		//priceの上限値設定 範囲：百、千の位
 		for($i = $price ; substr($i,0,1) === substr($price,0,1) ; $i++)
 		$pr_rimit = $i;
-		$where_array[] = "";
+		$where_array[] = "price BETWEEN {$price} AND {$pr_rimit}";
 	}
 	
 	if(!empty($_POST['stock'])){
 		//POSTデータを変数に格納
 		$stock = $_POST['stock'];
+		//以上、未満の文字で判別しsqlを変える
 	}
 
 	if(count($where_array) > 0){
-		$where =  " WHERE is_delete = false AND ".implode($where_array);
+		//配列に格納したsqlにANDをつける
+		for($i = 0; $i< count($where_array); $i++){
+			$where_array[$i] = " AND ".$where_array[$i];
+		}
+
+		//WHERE句を生成、配列内のsqlをすべて連結
+		$where =  " WHERE is_delete = false".implode($where_array);
+		//SELECT句とWHERE句を連結
 		$sql = "SELECT * FROM books".$where;
+		//sqlを表示
 		var_dump($sql);
 		//書籍テーブルから書籍情報を取得するSQLを実行する。また実行結果を変数に保存する
 		$books = getbooks($pdo,$sql,$keyword,$period,$price,$stock,$pe_rimit,$pr_rimit);
