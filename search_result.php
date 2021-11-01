@@ -76,9 +76,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 	}
 	
 	if(!empty($_POST['stock'])){
-		//POSTデータを変数に格納
-		$stock = $_POST['stock'];
+		//POSTデータの数値を変数に格納
+		$stock = preg_replace('/[^0-9]/', '', $_POST['stock']);
+		$stock = intval($stock);
+		var_dump($stock);
+		var_dump(substr($_POST['stock'], 2, 2));
+
 		//以上、未満の文字で判別しsqlを変える
+		if(substr($_POST['stock'], -2, 2) == "未満"){
+			$where_array[] = "stock < {$stock}";
+		}else if(substr($_POST['stock'], -2, 2) == "以上"){
+			$where_array[] = "stock >= {$stock}";
+		}
 	}
 
 	if(count($where_array) > 0){

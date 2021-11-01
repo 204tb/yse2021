@@ -81,12 +81,12 @@ if (!$_SESSION["login"]){
                         <td>
                             <select name="stock">
                                 <option value="0" hidden>指定しない</option>
-                                <option value="10">10冊未満</option>
-                                <option value="20">20冊未満</option>
-                                <option value="30">30冊未満</option>
-                                <option value="40">40冊未満</option>
-                                <option value="50">50冊未満</option>
-                                <option value="50">50冊以上</option>
+                                <option value="10未満">10冊未満</option>
+                                <option value="20未満">20冊未満</option>
+                                <option value="30未満">30冊未満</option>
+                                <option value="40未満">40冊未満</option>
+                                <option value="50未満">50冊未満</option>
+                                <option value="50以上">50冊以上</option>
                             </select>
                         </td>
 					</tr>
