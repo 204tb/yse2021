@@ -52,7 +52,7 @@ if (!$_SESSION["login"]){
 					</thead>
 					<tr>
                         <td>
-                            <input type='text' name='keyword' size='5'>
+                            <input type='text' name='keyword' size='5'placeholder="指定しない">
                         </td>
                         <td>
                             <select name="period">
