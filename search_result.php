@@ -34,51 +34,64 @@ try{
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
-    //POSTデータをサニタイズ
-	$posts = check($_POST);
+	$where = "";
+	$where_array = [];
+	
+	if($_POST['keyword'] != 0 && empty($_POST['keyword'])){}
+	else{
+		//POSTデータを変数に格納,サニタイズ
+		$keyword = check($_POST['keyword']);
+		$where_array[] = "(title LIKE {$keyword} OR author LIKE {$keyword})";
+	}
 
-	//POSTデータを変数に格納
-	$keyword = $_POST['keyword'];
-	$period = intval($_POST['period']);
-	$price = intval($_POST['price']);
-	$stock = $_POST['stock'];
-
-	//範囲指定用変数period,priceの上限値
-	$pe_rimit;
-	$pr_rimit;
-
-	//periodの上限値設定 範囲：十の位
-	for($i = $period ; substr($i,-2,1) === substr($period,-2,1) ; $i++)
+	if(!empty($_POST['period'])){
+		//POSTデータを変数に格納
+		$period = intval($_POST['period']);
+		//範囲指定用変数periodの上限値
+		$pe_rimit = 0;
+		//periodの上限値設定 範囲：十の位
+		for($i = $period ; substr($i,-2,1) === substr($period,-2,1) ; $i++)
 		$pe_rimit = $i;
+		$where_array[] = "";
+	}
+	
+	if(!empty($_POST['price'])){
+		//POSTデータを変数に格納
+		$price = intval($_POST['price']);
+		//範囲指定用変数priceの上限値
+		$pr_rimit = 0;
+		//priceの上限値設定 範囲：百、千の位
+		for($i = $price ; substr($i,0,1) === substr($price,0,1) ; $i++)
+		$pr_rimit = $i;
+		$where_array[] = "";
+	}
+	
+	if(!empty($_POST['stock'])){
+		//POSTデータを変数に格納
+		$stock = $_POST['stock'];
+	}
 
-	//priceの上限値設定 範囲：百、千の位
-	for($i = $price ; substr($i,0,1) === substr($price,0,1) ; $i++)
-	$pr_rimit = $i;
-
-	var_dump($period,$pe_rimit,$price,$pr_rimit,$stock,$keyword);
-
-    //書籍テーブルから書籍情報を取得するSQLを実行する。また実行結果を変数に保存する
-    $books = getbooks($pdo,$keyword,$period,$price,$stock,$pe_rimit,$pr_rimit);
+	if(count($where_array) > 0){
+		$where =  " WHERE is_delete = false".implode(" AND ",$where_array);
+		$sql = "SELECT * FROM books".$where;
+		var_dump($sql);
+		//書籍テーブルから書籍情報を取得するSQLを実行する。また実行結果を変数に保存する
+		$books = getbooks($pdo,$sql);
+	}
 }
 
 //サニタイズ(XSS対策)
-function check($posts)
+function check($keyword)
 {
-    foreach ($posts as $column => $post) {
-        $posts[$column] = htmlspecialchars($post, ENT_QUOTES, 'UTF-8');
-    }
-    return $posts;
+    $keyword = htmlspecialchars($keyword, ENT_QUOTES, 'UTF-8');
+    return $keyword;
 }
 
-function getbooks ($pdo,$keyword,$period,$price,$stock,$pe_rimit,$pr_rimit)
+function getbooks ($pdo,$sql)
 {
-	$sql = "SELECT * FROM books WHERE is_delete = false
-	AND (title LIKE ? OR author LIKE ?)";
 	$stmt = $pdo->prepare($sql);
-	$stmt->execute(array('%'.$keyword.'%','%'.$keyword.'%'));
-	
+	$stmt->execute();	
 	$books = $stmt->fetchall(PDO::FETCH_ASSOC);
-	
 	return $books;
 }
 
@@ -122,20 +135,24 @@ function getbooks ($pdo,$keyword,$period,$price,$stock,$pe_rimit,$pr_rimit)
 						</tr>
 					</thead>
                     <?php
-						//SQLの実行結果の変数から1レコードのデータを取り出す。レコードがない場合はループを終了する。
-						foreach($books as $book):
-							//1レコードのデータを渡す。
-							echo "<tr id='book'>";
-							echo "<td id='check'><input type='checkbox' name='books[]'value=".$book['id']."></td>";
-							echo "<td id='id'>{$book['id']}</td>";
-							echo "<td id='title'>{$book['title']}</td>";
-							echo "<td id='author'>{$book['author']}</td>";
-							echo "<td id='date'>{$book['salesDate']}</td>";
-							echo "<td id='price'>{$book['price']}</td>";
-							echo "<td id='stock'>{$book['stock']}</td>";
-
-							echo "</tr>";
-						endforeach;
+						if(!empty($books)){
+							//SQLの実行結果の変数から1レコードのデータを取り出す。レコードがない場合はループを終了する。
+							foreach($books as $book):
+								//1レコードのデータを渡す。
+								echo "<tr id='book'>";
+								echo "<td id='check'><input type='checkbox' name='books[]'value=".$book['id']."></td>";
+								echo "<td id='id'>{$book['id']}</td>";
+								echo "<td id='title'>{$book['title']}</td>";
+								echo "<td id='author'>{$book['author']}</td>";
+								echo "<td id='date'>{$book['salesDate']}</td>";
+								echo "<td id='price'>{$book['price']}</td>";
+								echo "<td id='stock'>{$book['stock']}</td>";
+	
+								echo "</tr>";
+							endforeach;							
+						}else{
+							echo "書籍が見つかりませんでした";
+						}
 						?>
 				</table>
 				<button type="submit" id="btn1" formmethod="POST" name="decision" value="3" formaction="nyuka.php">入荷</button>

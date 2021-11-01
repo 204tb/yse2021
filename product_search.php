@@ -52,11 +52,11 @@ if (!$_SESSION["login"]){
 					</thead>
 					<tr>
                         <td>
-                            <input type='text' name='keyword' size='5' required>
+                            <input type='text' name='keyword' size='5'>
                         </td>
                         <td>
-                            <select name="period" required>
-                                <option value="" hidden></option>
+                            <select name="period">
+                                <option value="0" hidden>指定しない</option>
                                 <option value="1970">1970年代</option>
                                 <option value="1980">1980年代</option>
                                 <option value="1990">1990年代</option>
@@ -66,8 +66,8 @@ if (!$_SESSION["login"]){
                             </select>
                         </td>
                         <td>
-                            <select name="price" required>
-                                <option value="" hidden></option>
+                            <select name="price">
+                                <option value="0" hidden>指定しない</option>
                                 <option value="400">400円代</option>
                                 <option value="500">500円代</option>
                                 <option value="600">600円代</option>
@@ -79,8 +79,8 @@ if (!$_SESSION["login"]){
                             </select>
                         </td>
                         <td>
-                            <select name="stock" required>
-                                <option value="" hidden></option>
+                            <select name="stock">
+                                <option value="0" hidden>指定しない</option>
                                 <option value="10">10冊未満</option>
                                 <option value="20">20冊未満</option>
                                 <option value="30">30冊未満</option>
