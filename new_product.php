@@ -30,6 +30,11 @@ try{
 	exit;
 }
 
+// ⑯「getByid」関数を呼び出し、変数に戻り値を入れる。その際引数にDBの接続情報を渡す。
+$book_id = getByid($pdo);
+//int型に変換して+1
+$book_id = intval($book_id['max(id)']) + 1;
+
 //ボタンを押した際の処理
 if(isset($_POST["new"]) && $_POST["new"]=="ok"){
 	//入力値のチェック
@@ -45,13 +50,18 @@ if(isset($_POST["new"]) && $_POST["new"]=="ok"){
 	$posts = check($_POST);
 	//isbnを生成
 	$isbn = create_isbn();
-	var_dump($isbn);
-	//データベースに書籍を追加する
-	Book_Add($pdo,$posts,$isbn);
-	//SESSIONの「success」に「入荷が完了しました」と設定する。
-	$_SESSION["success"] ="書籍の追加が完了しました";
-	//「header」関数を使用して在庫一覧画面へ遷移する。
-	header("location:zaiko_ichiran.php");
+	//セッションに保存
+	$_SESSION['new_product'] = array(
+		'title'  => $posts['title'],
+		'author' => $posts['author'],
+		'date'   => $posts['date'],
+		'price'  => $posts['price'],
+		'stock'  => $posts['stock']
+	);
+	$_SESSION['isbn'] = $isbn;
+	$_SESSION['book_id'] = $book_id;
+	//「header」関数を使用して確認画面へ遷移する。
+	header("location:new_product_kakunin.php");
 
 }
 
@@ -72,20 +82,6 @@ function check($posts)
         $posts[$column] = htmlspecialchars($post, ENT_QUOTES, 'UTF-8');
     }
     return $posts;
-}
-
-//書籍を追加する
-function Book_Add($pdo,$posts,$isbn){    
-    try{
-        $sql = "INSERT INTO books VALUES(id,?,?,?,?,?,?,?)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(array($posts['title'],$posts['author'],$posts['date'],$isbn,$posts['price'],$posts['stock'],false));
-        header('Location: completion.php');
-    }
-    catch (PDOException $e) {
-        header('Location: error_page.php');
-        exit;
-    }
 }
 
 //isbn生成
@@ -110,7 +106,7 @@ function create_isbn()
 <html lang="ja">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>入荷</title>
+	<title>新商品追加</title>
 	<link rel="stylesheet" href="css/ichiran.css" type="text/css" />
 </head>
 <body>
@@ -157,13 +153,6 @@ function create_isbn()
 							<th>在庫数</th>
 						</tr>
 					</thead>
-					<?php 
-    					// ⑯「getByid」関数を呼び出し、変数に戻り値を入れる。その際引数にDBの接続情報を渡す。
-						$book_id = getByid($pdo);
-
-						//int型に変換して+1
-						$book_id = intval($book_id['max(id)']) + 1; 
-					?>
 					<input type="hidden" value="" name="book">
 					<tr>
 						<td><?= $book_id;?></td>
